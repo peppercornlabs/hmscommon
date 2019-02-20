@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>hms-parent</groupId>
+		<artifactId>hms-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+
+	<groupId>hms-parent</groupId>
+	<artifactId>hmscommon</artifactId>
+	<name>hmscommon</name>
+
+	<version>1.0</version>
+
+	<properties>
+	      
+		  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<docker.image.name>hmscommon</docker.image.name>
+		<docker.image.tag>2.8.2</docker.image.tag>
+		<dataprovider.version>1.0</dataprovider.version>
+	
+	
+		<!--Tests execution switches -->
+		<skipUTs>false</skipUTs>
+		<skipITs>true</skipITs>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.netgear.hms</groupId>
+				<artifactId>hmsdependency</artifactId>
+				<version>${BOM.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!--Import External dependencies -->
+		<!-- Logging with SLF4J & Log4j -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-logging</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+		</dependency>
+		<!-- Spring core & mvc -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-spring-web</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+		</dependency>
+		<!--Json Jackson -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-json-jackson</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+		</dependency>
+		<!--Validation API -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-validation</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+		</dependency>
+		<!--Tomcat and Servlet API -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-servlet-tomcat-api</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
+		<!--Code utils -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-code-utils</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+		</dependency>
+		<!--Swagger -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-swagger</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
+
+		<!--Testing -->
+		<!--Spring test -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-test-spring</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+		<!--Junit -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-test-junit</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+		<!--Spock -->
+		<dependency>
+			<groupId>com.netgear.hms.dependency</groupId>
+			<artifactId>hms-dependency-test-spock</artifactId>
+			<version>${BOM.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.plugin.compiler.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<!--compiling groovy code -->
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<version>${maven.plugin.groovy.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compileTests</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<testSources>
+						<testSource>
+							<directory>${project.basedir}/src/test/groovy</directory>
+							<includes>
+								<include>**/*.groovy</include>
+							</includes>
+						</testSource>
+					</testSources>
+				</configuration>
+			</plugin>
+			<!--Unit tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.plugin.surefire.version}</version>
+				<configuration>
+					<skipTests>${skipUTs}</skipTests>
+					<excludes>
+						<exclude>**/*integration/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.plugin.jar.version}</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Specification-Title>${project.name}</Specification-Title>
+							<Specification-Version>${project.version}</Specification-Version>
+							<Implementation-Version>${build.number}</Implementation-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.10</version>
+				<configuration>
+					<imageName>${docker.image.name}:${docker.image.tag}</imageName>
+					<dockerDirectory>${basedir}/target/dockerfile</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+			
+			
+		</plugins>
+	</build>
+</project>
