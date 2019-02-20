@@ -15,7 +15,7 @@ UPDATE: update for Kubernetes plugin support
 */
 pipeline {
     agent { 
-        any {
+        kubernetes {
             label 'hmscommon'
             defaultContainer 'jnlp'
             yamlFile 'hmscommon/Jenkins.yaml' 
